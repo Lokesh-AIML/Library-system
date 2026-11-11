@@ -1,0 +1,907 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Athenaeum Library | Knowledge & Discovery</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Playfair+Display:ital,wght@0,600;0,700;1,600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <!-- Toast Notification Container -->
+  <div id="toastContainer" class="toast-container" aria-live="polite" aria-atomic="true"></div>
+
+  <!-- Main Navigation Header -->
+  <header class="app-header">
+    <div class="header-container">
+      <a href="#home" class="brand-logo" id="brandHomeLink">
+        <span class="brand-icon">🏛️</span>
+        <div class="brand-text">
+          <span class="brand-name">Athenaeum Library</span>
+          <span class="brand-tagline">Academic Knowledge Hub</span>
+        </div>
+      </a>
+
+      <nav class="main-nav" aria-label="Main Navigation">
+        <button type="button" class="nav-link active" data-tab="catalog">Catalog</button>
+        <button type="button" class="nav-link" id="navDashboardBtn" data-tab="dashboard">My Account</button>
+        <button type="button" class="nav-link admin-only hidden" id="navAdminBtn" data-tab="admin">Admin Panel</button>
+        <button type="button" class="nav-link" data-tab="rules">Library Info & Rules</button>
+      </nav>
+
+      <div class="header-auth" id="headerAuthArea">
+        <!-- Guest View -->
+        <div id="guestControls" class="auth-buttons">
+          <button type="button" class="btn btn-outline" id="openAuthModalBtn">Sign In / Register</button>
+        </div>
+
+        <!-- Authenticated View -->
+        <div id="userControls" class="user-profile-badge hidden">
+          <button type="button" class="wallet-nav-pill" id="headerWalletPill" title="Open Library Wallet">
+            <span class="wallet-pill-icon">💳</span>
+            <span class="wallet-pill-amt" id="headerWalletAmount">$25.00</span>
+          </button>
+          <div class="user-chip" id="userChipBtn" title="View Profile">
+            <span class="user-avatar" id="headerUserAvatar">SJ</span>
+            <div class="user-meta">
+              <span class="user-name" id="headerUserName">Sarah Jenkins</span>
+              <span class="user-role-badge" id="headerUserRole">Student</span>
+            </div>
+          </div>
+          <button type="button" class="btn btn-sm btn-ghost" id="logoutBtn" title="Log out">Sign Out</button>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main class="main-content">
+
+    <!-- HERO SECTION -->
+    <section class="hero-section" id="heroSection">
+      <div class="hero-content">
+        <span class="hero-pill">✨ University Academic & Research Collection</span>
+        <h1 class="hero-title">Explore Boundless Wisdom & Scholarly Works</h1>
+        <p class="hero-subtitle">
+          Access thousands of curated books in Computer Science, Artificial Intelligence, Literature, Science, and Humanities. Borrow books online with your student or faculty account.
+        </p>
+
+        <!-- Quick Library Live Metrics -->
+        <div class="library-metrics">
+          <div class="metric-card">
+            <span class="metric-value" id="metricTotalTitles">16</span>
+            <span class="metric-label">Curated Titles</span>
+          </div>
+          <div class="metric-card">
+            <span class="metric-value" id="metricAvailableCopies">58</span>
+            <span class="metric-label">Copies Available</span>
+          </div>
+          <div class="metric-card">
+            <span class="metric-value">5 Books</span>
+            <span class="metric-label">Borrow Limit / User</span>
+          </div>
+          <div class="metric-card">
+            <span class="metric-value">14 Days</span>
+            <span class="metric-label">Loan Duration</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- SECTION: CATALOG & SEARCH -->
+    <section class="content-section active" id="catalogSection">
+      <div class="section-container">
+        <div class="catalog-toolbar">
+          <div class="search-box-wrapper">
+            <span class="search-icon">🔍</span>
+            <input 
+              type="search" 
+              id="bookSearchInput" 
+              class="search-input" 
+              placeholder="Search by title, author, ISBN, or keywords (e.g. 'Clean Code', 'Russell', 'AI')..."
+              autocomplete="off"
+              autocorrect="off"
+              spellcheck="false"
+            >
+            <button type="button" class="search-clear-btn hidden" id="searchClearBtn" aria-label="Clear search">✕</button>
+          </div>
+
+          <div class="filter-controls">
+            <label class="toggle-checkbox" for="filterAvailableOnly">
+              <input type="checkbox" id="filterAvailableOnly">
+              <span class="toggle-track"></span>
+              <span class="toggle-label">Only Available Books</span>
+            </label>
+          </div>
+        </div>
+
+        <!-- Category Filter Chips -->
+        <div class="category-chips-wrapper" role="radiogroup" aria-label="Filter books by genre">
+          <button type="button" class="category-chip active" data-category="All">All Categories</button>
+          <button type="button" class="category-chip" data-category="Technology">Technology</button>
+          <button type="button" class="category-chip" data-category="AI & Data">AI & Data</button>
+          <button type="button" class="category-chip" data-category="Literature">Literature</button>
+          <button type="button" class="category-chip" data-category="Science">Science</button>
+          <button type="button" class="category-chip" data-category="History">History</button>
+          <button type="button" class="category-chip" data-category="Business">Business</button>
+          <button type="button" class="category-chip" data-category="Philosophy">Philosophy</button>
+          <button type="button" class="category-chip" data-category="Psychology">Psychology</button>
+          <button type="button" class="category-chip" data-category="Productivity">Productivity</button>
+        </div>
+
+        <!-- Books Results Header -->
+        <div class="results-header">
+          <h2 class="section-title">Available Books & Media</h2>
+          <span class="results-count" id="resultsCount">Showing 16 books</span>
+        </div>
+
+        <!-- Books Grid -->
+        <div class="books-grid" id="booksGrid">
+          <!-- Dynamically populated via app.js -->
+        </div>
+
+        <!-- Empty state -->
+        <div class="empty-state hidden" id="noBooksState">
+          <div class="empty-icon">📚</div>
+          <h3>No books match your search</h3>
+          <p>Try searching for a different keyword or resetting the category filter.</p>
+          <button type="button" class="btn btn-outline" id="resetSearchBtn">Reset Filters</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- SECTION: USER DASHBOARD (PERSONAL USER DATA & LOANS) -->
+    <section class="content-section" id="dashboardSection">
+      <div class="section-container">
+        
+        <!-- Guest Notice if not logged in -->
+        <div class="auth-required-banner" id="dashboardGuestBanner">
+          <div class="banner-icon">🔒</div>
+          <div class="banner-body">
+            <h3>Sign in to access your personal Library Account</h3>
+            <p>Each user has their own dedicated dashboard to manage active loans, track return due dates, and view borrowing history.</p>
+          </div>
+          <button type="button" class="btn btn-primary" id="dashboardSignInBtn">Sign In / Register</button>
+        </div>
+
+        <!-- Logged In User Content -->
+        <div class="user-dashboard-content hidden" id="dashboardUserContent">
+          
+          <!-- Academic Member Digital ID Card -->
+          <div class="dashboard-header-grid">
+            <div class="member-id-card">
+              <div class="card-chip-row">
+                <span class="id-brand">🏛️ Athenaeum Library</span>
+                <span class="id-type">DIGITAL PASS</span>
+              </div>
+              <div class="card-middle-row">
+                <div class="card-avatar" id="dashUserAvatar">SJ</div>
+                <div class="card-details">
+                  <h3 class="card-holder-name" id="dashUserName">Sarah Jenkins</h3>
+                  <div class="card-sub-info">
+                    <span id="dashUserEmail">sarah@library.com</span>
+                    <span class="bullet">•</span>
+                    <span id="dashUserDept">Computer Science</span>
+                  </div>
+                </div>
+              </div>
+              <div class="card-footer-row">
+                <div>
+                  <span class="card-caption">MEMBER ID</span>
+                  <span class="card-code" id="dashMemberId">LIB-2026-101</span>
+                </div>
+                <div>
+                  <span class="card-caption">WALLET BALANCE</span>
+                  <span class="card-code" id="dashWalletBalance" style="color:#fef3c7; font-weight:800;">$25.00</span>
+                </div>
+                <div>
+                  <span class="card-caption">STATUS</span>
+                  <span class="status-badge-active" id="dashMemberStatus">Active • Good Standing</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Quick Account Stat Tiles -->
+            <div class="stat-tiles-grid">
+              <div class="stat-tile">
+                <div class="tile-icon icon-blue">📚</div>
+                <div class="tile-data">
+                  <span class="tile-num" id="statActiveLoans">2</span>
+                  <span class="tile-title">Active Loans</span>
+                </div>
+                <span class="tile-hint">Max 5 allowed</span>
+              </div>
+
+              <div class="stat-tile">
+                <div class="tile-icon icon-green">💳</div>
+                <div class="tile-data">
+                  <span class="tile-num" id="statWalletBalance">$25.00</span>
+                  <span class="tile-title">Library Wallet</span>
+                </div>
+                <button type="button" class="btn btn-sm btn-outline" id="topupFromTileBtn" style="margin-top:0.4rem; padding:0.25rem 0.6rem; font-size:0.75rem;">+ Add Funds</button>
+              </div>
+
+              <div class="stat-tile">
+                <div class="tile-icon icon-amber">⏰</div>
+                <div class="tile-data">
+                  <span class="tile-num" id="statDueSoon">1</span>
+                  <span class="tile-title">Due This Week</span>
+                </div>
+                <span class="tile-hint">14-day loan rule</span>
+              </div>
+
+              <div class="stat-tile">
+                <div class="tile-icon icon-purple">💵</div>
+                <div class="tile-data">
+                  <span class="tile-num" id="statFinesDue">$0.00</span>
+                  <span class="tile-title">Fines Balance</span>
+                </div>
+                <div id="finesActionArea">
+                  <span class="tile-hint" id="finesHintText">No fees pending</span>
+                  <button type="button" class="btn btn-sm btn-primary hidden" id="payFineBtn" style="margin-top:0.4rem; padding:0.25rem 0.6rem; font-size:0.75rem; background:#dc2626; border-color:#dc2626;">Pay with Wallet</button>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Section: Active Loans -->
+          <div class="dashboard-panel">
+            <div class="panel-header">
+              <div class="panel-title-group">
+                <h3>📖 Currently Borrowed Books</h3>
+                <p class="panel-subtitle">Books checked out on this account. Return them before the due date to avoid late fees.</p>
+              </div>
+              <button type="button" class="btn btn-sm btn-outline" id="browseMoreFromDashBtn">+ Borrow Another Book</button>
+            </div>
+
+            <div class="active-loans-list" id="activeLoansContainer">
+              <!-- Dynamically populated via app.js -->
+            </div>
+          </div>
+
+          <!-- Section: Borrowing History -->
+          <div class="dashboard-panel">
+            <div class="panel-header">
+              <div class="panel-title-group">
+                <h3>📜 Borrowing History</h3>
+                <p class="panel-subtitle">Previously read and returned books.</p>
+              </div>
+            </div>
+
+            <div class="history-table-wrapper">
+              <table class="data-table" id="historyTable">
+                <thead>
+                  <tr>
+                    <th>Book</th>
+                    <th>Category</th>
+                    <th>Borrowed Date</th>
+                    <th>Returned Date</th>
+                    <th>Status</th>
+                  </tr>
+                </thead>
+                <tbody id="historyTableBody">
+                  <!-- Dynamically populated via app.js -->
+                </tbody>
+              </table>
+              <div class="empty-history hidden" id="emptyHistoryMsg">
+                No past borrowing history yet.
+              </div>
+            </div>
+          </div>
+
+          <!-- Section: Library Wallet & Transactions -->
+          <div class="dashboard-panel" id="walletDashboardPanel">
+            <div class="panel-header">
+              <div class="panel-title-group">
+                <h3>💳 Library Digital Wallet & Funds</h3>
+                <p class="panel-subtitle">Manage prepaid campus credits, pay overdue fines, and track transaction receipts.</p>
+              </div>
+              <button type="button" class="btn btn-sm btn-accent" id="openWalletModalBtn">+ Top Up Balance</button>
+            </div>
+
+            <div class="wallet-overview-card">
+              <div class="wallet-overview-left">
+                <span class="wallet-badge-label">PREPAID CAMPUS BALANCE</span>
+                <h2 class="wallet-display-balance" id="dashPanelWalletAmount">$25.00</h2>
+                <span class="wallet-subtext">Automated payments for book late fees ($0.50/day), laser printing, and room reservation holds</span>
+              </div>
+              <div class="wallet-quick-actions">
+                <span style="font-size:0.8rem; font-weight:700; color:var(--text-muted); display:block; margin-bottom:0.25rem;">Quick Deposit:</span>
+                <div style="display:flex; gap:0.4rem;">
+                  <button type="button" class="btn btn-sm btn-outline quick-topup-btn" data-amt="10">+$10</button>
+                  <button type="button" class="btn btn-sm btn-outline quick-topup-btn" data-amt="20">+$20</button>
+                  <button type="button" class="btn btn-sm btn-outline quick-topup-btn" data-amt="50">+$50</button>
+                </div>
+              </div>
+            </div>
+
+            <h4 style="margin-top:1.5rem; margin-bottom:0.75rem; font-family:var(--font-serif); font-size:1.1rem; color:var(--primary);">Recent Wallet Transactions</h4>
+            <div class="history-table-wrapper">
+              <table class="data-table" id="walletTransactionsTable">
+                <thead>
+                  <tr>
+                    <th>Date & Time</th>
+                    <th>Type</th>
+                    <th>Description</th>
+                    <th>Amount</th>
+                    <th>Status</th>
+                  </tr>
+                </thead>
+                <tbody id="walletTransactionsTableBody">
+                  <!-- Dynamically populated via app.js -->
+                </tbody>
+              </table>
+              <div class="empty-history hidden" id="emptyWalletTxMsg">
+                No transactions yet. Click "+ Top Up Balance" to add library funds.
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+    <!-- SECTION: ADMIN PANEL (LIBRARIAN ELEANOR) -->
+    <section class="content-section" id="adminSection">
+      <div class="section-container">
+        <div class="admin-header-row">
+          <div>
+            <h2 class="section-title">Library Administration Console</h2>
+            <p class="section-subtitle">Manage catalog items, monitor university loans, and oversee member circulation.</p>
+          </div>
+          <button type="button" class="btn btn-primary" id="openAddBookModalBtn">+ Add New Book</button>
+        </div>
+
+        <!-- Admin Aggregate Metrics -->
+        <div class="admin-metrics-grid" id="adminMetricsGrid">
+          <div class="metric-card">
+            <span class="metric-value" id="adminTotalTitles">-</span>
+            <span class="metric-label">Catalog Titles</span>
+          </div>
+          <div class="metric-card">
+            <span class="metric-value" id="adminTotalCopies">-</span>
+            <span class="metric-label">Total Volume Copies</span>
+          </div>
+          <div class="metric-card">
+            <span class="metric-value" id="adminActiveLoans">-</span>
+            <span class="metric-label">Active Loans Campus-wide</span>
+          </div>
+          <div class="metric-card">
+            <span class="metric-value" id="adminRegisteredUsers">-</span>
+            <span class="metric-label">Active Student/Faculty Members</span>
+          </div>
+        </div>
+
+        <!-- Admin Live Active Loans Table -->
+        <div class="dashboard-panel">
+          <div class="panel-header">
+            <div class="panel-title-group">
+              <h3>📋 All Active Campus Loans</h3>
+              <p class="panel-subtitle">Real-time circulation tracking of all books currently checked out across all user accounts.</p>
+            </div>
+            <button type="button" class="btn btn-sm btn-ghost" id="refreshAdminDataBtn">↻ Refresh</button>
+          </div>
+
+          <div class="history-table-wrapper">
+            <table class="data-table" id="adminLoansTable">
+              <thead>
+                <tr>
+                  <th>Borrower</th>
+                  <th>Member ID</th>
+                  <th>Book Title</th>
+                  <th>ISBN</th>
+                  <th>Borrowed</th>
+                  <th>Due Date</th>
+                </tr>
+              </thead>
+              <tbody id="adminLoansTableBody">
+                <!-- Dynamically populated via app.js -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- SECTION: LIBRARY RULES & POLICIES -->
+    <section class="content-section" id="rulesSection">
+      <div class="section-container">
+        <div class="rules-header">
+          <h2 class="section-title">Library Information, Guidelines & Services</h2>
+          <p class="section-subtitle">Everything you need to know about borrowing privileges, study facilities, and digital access.</p>
+        </div>
+
+        <div class="rules-grid">
+          <div class="rule-card">
+            <div class="rule-icon">🕒</div>
+            <h3>Operating Hours</h3>
+            <ul>
+              <li><strong>Monday – Friday:</strong> 8:00 AM – 10:00 PM</li>
+              <li><strong>Saturday – Sunday:</strong> 9:00 AM – 8:00 PM</li>
+              <li><strong>Digital Catalog:</strong> Available 24/7 online</li>
+              <li><strong>Holiday Closures:</strong> Notified 2 weeks in advance via portal</li>
+            </ul>
+          </div>
+
+          <div class="rule-card">
+            <div class="rule-icon">📖</div>
+            <h3>Borrowing & Returns</h3>
+            <ul>
+              <li><strong>Student Quota:</strong> Up to 5 books concurrently</li>
+              <li><strong>Loan Duration:</strong> 14 standard calendar days</li>
+              <li><strong>Renewals:</strong> 1 renewal permitted if no waitlist exists</li>
+              <li><strong>Instant Returns:</strong> Drop off in book bin or return via account</li>
+            </ul>
+          </div>
+
+          <div class="rule-card">
+            <div class="rule-icon">💵</div>
+            <h3>Overdue & Lost Book Policies</h3>
+            <ul>
+              <li><strong>Grace Period:</strong> 24 hours following the due date</li>
+              <li><strong>Late Fee:</strong> $0.50 per day per overdue book</li>
+              <li><strong>Account Hold:</strong> Applied if balance exceeds $10.00</li>
+              <li><strong>Damaged / Lost:</strong> Replacement cost plus $15 processing fee</li>
+            </ul>
+          </div>
+
+          <div class="rule-card">
+            <div class="rule-icon">🏛️</div>
+            <h3>Spaces & Technology</h3>
+            <ul>
+              <li><strong>Quiet Study Pods:</strong> Floors 2 and 3</li>
+              <li><strong>Group Collaboration Rooms:</strong> Floor 1 (Reservation required)</li>
+              <li><strong>High-Speed Wi-Fi:</strong> Network <code>Library-Scholar</code></li>
+              <li><strong>Duplex Printing & Scanners:</strong> Ground floor commons</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- ======================================================== -->
+  <!-- MODAL: AUTHENTICATION DIALOG (SIGN IN & REGISTER)        -->
+  <!-- ======================================================== -->
+  <dialog id="authDialog" class="modal-dialog">
+    <div class="dialog-content">
+      <div class="dialog-header">
+        <div class="dialog-title-group">
+          <span class="dialog-brand-icon">🏛️</span>
+          <div>
+            <h2 id="authDialogTitle">Library Access Portal</h2>
+            <p class="dialog-subtitle">Sign in to your member account or register for a new card</p>
+          </div>
+        </div>
+        <button type="button" class="dialog-close-btn" id="closeAuthDialogBtn" aria-label="Close dialog">✕</button>
+      </div>
+
+      <!-- Tabs: Sign In / Register -->
+      <div class="auth-tabs" role="tablist">
+        <button type="button" class="auth-tab-btn active" id="tabSignInBtn" role="tab" aria-selected="true" aria-controls="signInForm">
+          Sign In
+        </button>
+        <button type="button" class="auth-tab-btn" id="tabRegisterBtn" role="tab" aria-selected="false" aria-controls="registerForm">
+          Register New Member
+        </button>
+      </div>
+
+      <!-- Sign In Form -->
+      <form id="signInForm" class="auth-form" method="POST">
+        <div class="form-group">
+          <label for="loginEmail">Email Address</label>
+          <input 
+            type="email" 
+            id="loginEmail" 
+            name="email" 
+            required 
+            autocomplete="username" 
+            autocorrect="off" 
+            autocapitalize="off" 
+            spellcheck="false"
+            placeholder="e.g. sarah@library.com"
+          >
+        </div>
+
+        <div class="form-group">
+          <label for="loginPassword">Password</label>
+          <div class="password-input-wrapper">
+            <input 
+              type="password" 
+              id="loginPassword" 
+              name="password" 
+              required 
+              autocomplete="current-password"
+              placeholder="Enter your password"
+            >
+            <button type="button" class="toggle-password-btn" id="toggleLoginPasswordBtn" aria-label="Toggle password visibility" aria-pressed="false">
+              👁️
+            </button>
+          </div>
+        </div>
+
+        <div class="form-error-msg hidden" id="loginErrorMsg"></div>
+
+        <button type="submit" class="btn btn-primary btn-block" id="loginSubmitBtn">
+          Sign In to Library
+        </button>
+      </form>
+
+      <!-- Register Form -->
+      <form id="registerForm" class="auth-form hidden" method="POST">
+        <div class="form-group">
+          <label for="regName">Full Legal Name</label>
+          <input 
+            type="text" 
+            id="regName" 
+            name="name" 
+            required 
+            autocomplete="name" 
+            placeholder="e.g. Maya Lin"
+          >
+        </div>
+
+        <div class="form-group">
+          <label for="regEmail">University or Personal Email</label>
+          <input 
+            type="email" 
+            id="regEmail" 
+            name="email" 
+            required 
+            autocomplete="username" 
+            autocorrect="off" 
+            autocapitalize="off" 
+            spellcheck="false"
+            placeholder="e.g. maya.lin@university.edu"
+          >
+        </div>
+
+        <div class="form-group">
+          <label for="regDept">Department / Major (Optional)</label>
+          <select id="regDept" name="department">
+            <option value="Computer Science">Computer Science & Software</option>
+            <option value="Artificial Intelligence">AI & Data Science</option>
+            <option value="Literature & Humanities">Literature & Humanities</option>
+            <option value="Physical Sciences">Physics & Chemistry</option>
+            <option value="Economics & Business">Business & Economics</option>
+            <option value="Philosophy">Philosophy & Ethics</option>
+            <option value="General Public">General Member</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label for="regPassword">Create Password</label>
+          <div class="password-input-wrapper">
+            <input 
+              type="password" 
+              id="regPassword" 
+              name="password" 
+              required 
+              minlength="6" 
+              autocomplete="new-password"
+              placeholder="At least 6 characters"
+            >
+            <button type="button" class="toggle-password-btn" id="toggleRegPasswordBtn" aria-label="Toggle password visibility" aria-pressed="false">
+              👁️
+            </button>
+          </div>
+          <span class="input-hint">Minimum 6 characters required.</span>
+        </div>
+
+        <div class="form-error-msg hidden" id="regErrorMsg"></div>
+
+        <button type="submit" class="btn btn-primary btn-block" id="registerSubmitBtn">
+          Create Member Account
+        </button>
+      </form>
+
+    </div>
+  </dialog>
+
+  <!-- ======================================================== -->
+  <!-- MODAL: BOOK DETAILS DIALOG                               -->
+  <!-- ======================================================== -->
+  <dialog id="bookDetailsDialog" class="modal-dialog">
+    <div class="dialog-content">
+      <div class="dialog-header">
+        <div class="dialog-title-group">
+          <span class="dialog-brand-icon" id="detailCoverIcon">📖</span>
+          <div>
+            <h2 id="detailBookTitle">Book Title</h2>
+            <p class="dialog-subtitle" id="detailBookAuthor">Author Name</p>
+          </div>
+        </div>
+        <button type="button" class="dialog-close-btn" id="closeDetailDialogBtn" aria-label="Close dialog">✕</button>
+      </div>
+
+      <div class="book-details-body">
+        <div class="detail-badges-row">
+          <span class="badge badge-category" id="detailCategory">Technology</span>
+          <span class="badge badge-rating" id="detailRating">★ 4.8 / 5.0</span>
+          <span class="badge" id="detailAvailabilityBadge">Available</span>
+        </div>
+
+        <div class="detail-description-block">
+          <h4>Synopsis & Editorial Review</h4>
+          <p id="detailDescription">Description text goes here...</p>
+        </div>
+
+        <div class="detail-metadata-grid">
+          <div class="meta-item">
+            <span class="meta-label">Shelf Location</span>
+            <span class="meta-val" id="detailShelf">Floor 2, Shelf Tech-A01</span>
+          </div>
+          <div class="meta-item">
+            <span class="meta-label">ISBN-13</span>
+            <span class="meta-val" id="detailIsbn">978-0132350884</span>
+          </div>
+          <div class="meta-item">
+            <span class="meta-label">Publication Year</span>
+            <span class="meta-val" id="detailYear">2008</span>
+          </div>
+          <div class="meta-item">
+            <span class="meta-label">Total Inventory</span>
+            <span class="meta-val" id="detailInventory">4 / 5 Copies Available</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="dialog-footer">
+        <button type="button" class="btn btn-outline" id="closeDetailFooterBtn">Close</button>
+        <button type="button" class="btn btn-primary" id="detailBorrowBtn">Borrow This Book</button>
+      </div>
+    </div>
+  </dialog>
+
+  <!-- ======================================================== -->
+  <!-- MODAL: ADMIN ADD NEW BOOK                                -->
+  <!-- ======================================================== -->
+  <dialog id="addBookDialog" class="modal-dialog">
+    <div class="dialog-content">
+      <div class="dialog-header">
+        <div class="dialog-title-group">
+          <span class="dialog-brand-icon">📚</span>
+          <div>
+            <h2>Add New Book to Catalog</h2>
+            <p class="dialog-subtitle">Register a physical volume into the library database</p>
+          </div>
+        </div>
+        <button type="button" class="dialog-close-btn" id="closeAddBookDialogBtn" aria-label="Close dialog">✕</button>
+      </div>
+
+      <form id="addBookForm" class="auth-form" method="POST">
+        <div class="form-group">
+          <label for="newBookTitle">Book Title</label>
+          <input type="text" id="newBookTitle" required placeholder="e.g. Structure and Interpretation of Computer Programs">
+        </div>
+
+        <div class="form-group">
+          <label for="newBookAuthor">Author(s)</label>
+          <input type="text" id="newBookAuthor" required placeholder="e.g. Harold Abelson & Gerald Jay Sussman">
+        </div>
+
+        <div class="form-row-2">
+          <div class="form-group">
+            <label for="newBookIsbn">ISBN</label>
+            <input type="text" id="newBookIsbn" required placeholder="978-0262510875">
+          </div>
+          <div class="form-group">
+            <label for="newBookCategory">Category</label>
+            <select id="newBookCategory" required>
+              <option value="Technology">Technology</option>
+              <option value="AI & Data">AI & Data</option>
+              <option value="Literature">Literature</option>
+              <option value="Science">Science</option>
+              <option value="History">History</option>
+              <option value="Business">Business</option>
+              <option value="Philosophy">Philosophy</option>
+              <option value="Psychology">Psychology</option>
+              <option value="Productivity">Productivity</option>
+              <option value="Design & UX">Design & UX</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="form-row-3">
+          <div class="form-group">
+            <label for="newBookCopies">Total Copies</label>
+            <input type="number" id="newBookCopies" min="1" max="50" value="3" required>
+          </div>
+          <div class="form-group">
+            <label for="newBookYear">Year</label>
+            <input type="number" id="newBookYear" min="1500" max="2030" value="2024" required>
+          </div>
+          <div class="form-group">
+            <label for="newBookIcon">Icon Emoji</label>
+            <select id="newBookIcon">
+              <option value="💻">💻 Tech</option>
+              <option value="🤖">🤖 AI</option>
+              <option value="📖">📖 Book</option>
+              <option value="🔬">🔬 Science</option>
+              <option value="🌌">🌌 Cosmos</option>
+              <option value="🏛️">🏛️ History</option>
+              <option value="🚀">🚀 Business</option>
+              <option value="💡">💡 Idea</option>
+              <option value="⚖️">⚖️ Philosophy</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="newBookShelf">Shelf Location</label>
+          <input type="text" id="newBookShelf" required placeholder="e.g. Floor 2, Shelf Tech-C12">
+        </div>
+
+        <div class="form-group">
+          <label for="newBookDesc">Summary / Description</label>
+          <textarea id="newBookDesc" rows="3" placeholder="Brief summary of the book..."></textarea>
+        </div>
+
+        <div class="dialog-footer">
+          <button type="button" class="btn btn-outline" id="cancelAddBookBtn">Cancel</button>
+          <button type="submit" class="btn btn-primary" id="saveBookBtn">Save Book to Catalog</button>
+        </div>
+      </form>
+    </div>
+  </dialog>
+
+  <!-- ======================================================== -->
+  <!-- MODAL: WALLET TOP-UP DIALOG                              -->
+  <!-- ======================================================== -->
+  <dialog id="walletTopupDialog" class="modal-dialog">
+    <div class="dialog-content">
+      <div class="dialog-header">
+        <div class="dialog-title-group">
+          <span class="dialog-brand-icon">💳</span>
+          <div>
+            <h2>Top Up Library Wallet</h2>
+            <p class="dialog-subtitle">Preload campus credit for overdue fees, printing & study bookings</p>
+          </div>
+        </div>
+        <button type="button" class="dialog-close-btn" id="closeWalletDialogBtn" aria-label="Close dialog">✕</button>
+      </div>
+
+      <form id="walletTopupForm" class="auth-form" method="POST">
+        <div class="wallet-balance-banner">
+          <span class="banner-sub">Current Balance</span>
+          <span class="banner-balance" id="modalWalletCurrentBalance">$25.00</span>
+        </div>
+
+        <div class="form-group">
+          <label>Select Quick Amount</label>
+          <div class="wallet-preset-grid">
+            <button type="button" class="preset-btn" data-amt="5">+$5.00</button>
+            <button type="button" class="preset-btn active" data-amt="10">+$10.00</button>
+            <button type="button" class="preset-btn" data-amt="20">+$20.00</button>
+            <button type="button" class="preset-btn" data-amt="50">+$50.00</button>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="customTopupAmount">Or Enter Amount ($)</label>
+          <input 
+            type="number" 
+            id="customTopupAmount" 
+            name="amount" 
+            min="1" 
+            max="500" 
+            step="1" 
+            value="10" 
+            required
+            placeholder="e.g. 15"
+          >
+        </div>
+
+        <div class="form-group">
+          <label for="topupMethod">Payment Method</label>
+          <select id="topupMethod" name="method">
+            <option value="Campus Student ID Card">🎓 Campus Student ID Card</option>
+            <option value="Debit / Credit Card">💳 Credit / Debit Card (Visa / Mastercard)</option>
+            <option value="UPI / NetBanking">📱 UPI / Apple Pay / NetBanking</option>
+            <option value="University Department Grant">🏛️ Department Academic Grant</option>
+          </select>
+        </div>
+
+        <div class="dialog-footer" style="padding-left:0; padding-right:0; margin-top:0.5rem;">
+          <button type="button" class="btn btn-outline" id="cancelWalletDialogBtn">Cancel</button>
+          <button type="submit" class="btn btn-primary" id="confirmTopupBtn">Deposit Funds Now</button>
+        </div>
+      </form>
+    </div>
+  </dialog>
+
+  <!-- ======================================================== -->
+  <!-- FLOATING CHATBOT WIDGET: "Libby"                         -->
+  <!-- ======================================================== -->
+  <aside class="chat-widget" aria-label="Library Virtual Assistant">
+    <!-- Chat Launcher Button -->
+    <button type="button" class="chat-launcher-btn" id="chatLauncherBtn" aria-expanded="false" aria-controls="chatWindow">
+      <span class="chat-launcher-icon">💬</span>
+      <span class="chat-launcher-text">Ask Libby (Doubts & Help)</span>
+      <span class="chat-badge-ping"></span>
+    </button>
+
+    <!-- Chat Window Container -->
+    <div class="chat-window hidden" id="chatWindow">
+      <div class="chat-header">
+        <div class="chat-avatar-info">
+          <div class="chat-bot-avatar">🏛️</div>
+          <div>
+            <div class="chat-bot-name">Libby <span class="chat-status-dot"></span></div>
+            <div class="chat-bot-role">Library AI Assistant • Clarify Doubts</div>
+          </div>
+        </div>
+        <button type="button" class="chat-close-btn" id="chatCloseBtn" aria-label="Minimize Chat">✕</button>
+      </div>
+
+      <!-- Chat Messages Scroll Area -->
+      <div class="chat-messages" id="chatMessages" role="log" aria-live="polite">
+        <div class="chat-message bot">
+          <div class="msg-bubble">
+            Hello! I'm <strong>Libby</strong>, your digital library concierge. 📚<br><br>
+            Have any doubts about borrowing, book recommendations, returning books, or library rules? Feel free to ask me!
+          </div>
+        </div>
+      </div>
+
+      <!-- Quick Suggestion Chips -->
+      <div class="chat-suggestions" id="chatSuggestions">
+        <button type="button" class="chat-chip" data-msg="How do I borrow a book?">How do I borrow?</button>
+        <button type="button" class="chat-chip" data-msg="Recommend AI books">Recommend AI books</button>
+        <button type="button" class="chat-chip" data-msg="Library hours and timings">Library hours?</button>
+        <button type="button" class="chat-chip" data-msg="What are the late fees?">Late fee policy?</button>
+      </div>
+
+      <!-- Chat Input Form -->
+      <form class="chat-input-form" id="chatForm">
+        <input 
+          type="text" 
+          id="chatInput" 
+          class="chat-input" 
+          placeholder="Ask a question or request a book..."
+          autocomplete="off"
+        >
+        <button type="submit" class="chat-send-btn" id="chatSendBtn" aria-label="Send message">
+          ➤
+        </button>
+      </form>
+    </div>
+  </aside>
+
+  <!-- Footer -->
+  <footer class="app-footer">
+    <div class="footer-container">
+      <div class="footer-col">
+        <div class="footer-brand">🏛️ Athenaeum Library System</div>
+        <p>A modernized academic library portal integrating physical book tracking, separate member accounts, and 24/7 AI-assisted discovery.</p>
+        <div class="db-status-pill" id="dbStatusPill" style="margin-top:0.75rem; display:inline-flex; align-items:center; gap:0.4rem; padding:0.25rem 0.65rem; background:rgba(255,255,255,0.1); border-radius:9999px; font-size:0.75rem; color:#f8fafc;">
+          <span style="width:7px; height:7px; border-radius:50%; background:#10b981;"></span>
+          <span id="dbStatusText">Backend: Supabase-Ready (Local SQLite)</span>
+        </div>
+      </div>
+      <div class="footer-col">
+        <h4>Navigation</h4>
+        <ul>
+          <li><a href="#catalog" class="footer-link" data-tab="catalog">Book Catalog</a></li>
+          <li><a href="#dashboard" class="footer-link" data-tab="dashboard">My Account / Loans</a></li>
+          <li><a href="#rules" class="footer-link" data-tab="rules">Rules & Timings</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>Library Hours</h4>
+        <p><strong>Mon – Fri:</strong> 8:00 AM – 10:00 PM<br>
+        <strong>Saturday:</strong> 9:00 AM – 8:00 PM<br>
+        <strong>Sunday:</strong> 10:00 AM – 6:00 PM</p>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      &copy; 2026 Athenaeum University Library. All rights reserved.
+    </div>
+  </footer>
+
+  <script src="app.js"></script>
+</body>
+</html>
